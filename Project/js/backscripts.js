@@ -6,6 +6,8 @@ var item;     // For selected item
 var dateS;
 var date;
 var dateInHTML;
+var result;
+var postJson;
 
 //Sorting and Visual Effects Assigned to Minsu
 $(function () {
@@ -43,6 +45,8 @@ $(function () {
 
     var fileTarget = $('.filebox .upload-hidden');
 
+    //http://stackoverflow.com/questions/4851595/how-to-resolve-the-c-fakepath
+    //fakepath problem resolved
     fileTarget.on('change', function(){
         if(window.FileReader){
             // get file name
@@ -144,6 +148,73 @@ function readProducts(sortBy, orderBy){
 
 //Validation Assigned to Minsu
 function createUpdateItem(){
+    date = new Date();
+    postJson = new Object(); // this object need for new data but, post manage exist data.
+        postJson.name = $("#name").val();
+        postJson.description = $("#description").val();
+        postJson.category = $("#category").val();
+        postJson.price = $("#price").val(); if (postJson.price == "") { postJson.price = "0"} 
+        postJson.stock = $("#stock").val(); if (postJson.stock == "") { postJson.stock = "0"} 
+        postJson.image = filename;
+        postJson.date = date;
+        result = JSON.stringify(postJson);
+
+    var itemName = $("#name").val();
+    var itemDescription = $("#description").val();
+
+    if(itemName != null && itemName != "" && itemDescription != null && itemDescription != "")
+    {
+        $("#spinner").removeClass("hidden");
+        if(isEdit == true)
+        {
+            item.name = $("#name").val();
+            item.description = $("#description").val();
+            item.category = $("#category").val();
+            item.price = $("#price").val();
+            item.stock = $("#stock").val();
+            item.image = filename;
+            item.date = date;
+            //alert(JSON.stringify(item));
+            
+            $.when($.ajax({
+                url: "http://localhost:3000/products/"+item.id, 
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify(item),
+            }))
+            .done(function() {
+                window.location.reload();
+                $("#spinner").addClass("hidden");
+            })
+            .fail(function(e) {
+                $("#spinner").addClass("hidden");
+                alert("failure to update changes");
+            })
+
+        } // Update
+        else{
+            $.when($.ajax({
+                url: "http://localhost:3000/products/", 
+                type: "POST",
+                contentType: "application/json",
+                data: result,
+                dataType:"JSON",
+            }))
+            .done(function() {
+                window.location.reload();
+                $("#spinner").addClass("hidden");
+            })
+            .fail(function(e) {
+                $("#spinner").addClass("hidden");
+                alert("failure to save changes");
+            })
+
+        } // create
+    }
+    else
+    {
+        alert("Please check your input.");
+    }
 
 }
 
