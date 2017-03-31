@@ -44,6 +44,11 @@
                               <label for="description">Description</label>
                               <textarea class="form-control" rows="8" id="description" placeholder="Product Description"></textarea>
                           </div>
+                          <div class="filebox bs3-primary preview-image">
+                              <input class="upload-name" value="Select file" disabled="disabled" style="width: 200px;">
+                              <label for="input_file">Image</label> 
+                              <input type="file" id="input_file" class="upload-hidden" accept="image/x-png,image/gif,image/jpeg"> 
+                          </div>
                           <button onclick="createUpdateItem();" type="submit" class="btn btn-primary pull-right submitBtn">Submit</button>
                       </form>
                   </div>
@@ -96,6 +101,11 @@
               </div>
         </div>
         <!-- Dialog goes here-->
+        <div class="hidden">
+            <div id="delete-dialog" title="Delete Item?">
+                <p>Delete this item?</p>
+            </div>
+        </div>
         <script type="text/javascript" src="js/backscripts.js"></script>
     </body>
 </html>

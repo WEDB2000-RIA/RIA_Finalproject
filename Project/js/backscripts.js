@@ -3,10 +3,89 @@ var orderBy;
 var isEdit = false;
 var items;	  // For whole data
 var item;     // For selected item
+var dateS;
+var date;
+var dateInHTML;
 
 //Sorting and Visual Effects Assigned to Minsu
 $(function () {
 	readProducts(sortBy, orderBy);
+    $('.sort').change(function (){
+        sortBy = $("#sortBy").val();
+        orderBy = $("#orderBy").val();
+        readProducts(sortBy, orderBy);
+    });
+
+    //validation to input only digits and generate , thousand
+    $('#price').keyup(function(event) {
+        // skip for arrow keys
+        if(event.which >= 37 && event.which <= 40) return;
+        // format number
+        $(this).val(function(index, value) {
+            return value
+            .replace(/\D/g, "")
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            ;
+        });
+    });
+
+    $('#stock').keyup(function(event) {
+        // skip for arrow keys
+        if(event.which >= 37 && event.which <= 40) return;
+        // format number
+        $(this).val(function(index, value) {
+            return value
+            .replace(/\D/g, "")
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            ;
+        });
+    });
+
+    var fileTarget = $('.filebox .upload-hidden');
+
+    fileTarget.on('change', function(){
+        if(window.FileReader){
+            // get file name
+            filename = $(this)[0].files[0].name;
+        } 
+
+        else {
+            // get file name for Old IE 
+            filename = $(this).val().split('/').pop().split('\\').pop();
+        };
+
+        $(this).siblings('.upload-name').val(filename);
+    });
+
+    //preview image 
+    var imgTarget = $('.preview-image .upload-hidden');
+
+    imgTarget.on('change', function(){
+        var parent = $(this).parent();
+        parent.children('.upload-display').remove();
+
+        if(window.FileReader){
+            //only image file
+            if (!$(this)[0].files[0].type.match(/image\//)) return;
+            
+            var reader = new FileReader();
+            reader.onload = function(e){
+                var src = e.target.result;
+                parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img src="'+src+'" class="upload-thumb"></div></div>');
+            }
+            reader.readAsDataURL($(this)[0].files[0]);
+        }
+
+        else {
+            $(this)[0].select();
+            $(this)[0].blur();
+            var imgSrc = document.selection.createRange().text;
+            parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img class="upload-thumb"></div></div>');
+
+            var img = $(this).siblings('.upload-display').find('img');
+            img[0].style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enable='true',sizingMethod='scale',src=\""+imgSrc+"\")";        
+        }
+    });
 }
 
 //Assigned to Yan
@@ -100,3 +179,23 @@ function deleteItem(){
 }
 
 //Dialog Assigned to Minsu
+function delItem(i){
+    $("#delete-dialog").dialog({
+        show: {effect: "fade", speed: 1000},
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        buttons: {
+            "Delete Item": function() {
+                deleteItem();
+                $(this).dialog("close");
+            },
+            Cancel: function() {
+                $(this).dialog("close");
+            }
+        }
+    });
+    item = items[i];
+    $("#delete-dialog").dialog("open");
+}
