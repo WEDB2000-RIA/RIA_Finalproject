@@ -27,10 +27,7 @@ $(function () {
 
 //Assigned to Paddy
 //loadProducts Function will load image and name of all products from Server 
-
-$(function () {
-    loadProducts(category);
-}function loadProducts(sortBy){
+function loadProducts(sortBy){
     $("#spinner").removeClass("hidden");
     $.ajax({
         type:"GET",
