@@ -144,7 +144,79 @@ function readProducts(sortBy, orderBy){
 
 //Validation Assigned to Minsu
 function createUpdateItem(){
+	// new object json data
+    myJson = new Object(); 
+	myJson.name = $("#name").val();
+		//alert(myJson.name);
+	myJson.description = $("#description").val();
+	myJson.category = $("#category").val();
+	myJson.price = $("#price").val(); 
+	if (myJson.price == "") { myJson.price = "0"} 
+	myJson.stock = $("#stock").val(); 
+	if (myJson.stock == "") { myJson.stock = "0"} 
+	myJson.image = filename;
+	date = new Date();
+	myJson.date = date; // instead existing date
+	// convert to json data type
+	jsonStr = JSON.stringify(myJson);
+	//alert(jsonStr);
+    var itemName = $("#name").val();
+    var itemDescription = $("#description").val();
 
+    if(itemName != null && itemName != "" && itemDescription != null && itemDescription != "")
+    {
+        $("#spinner").removeClass("hidden");
+        if(isEdit == true) // edit ajax
+        {
+            item.name = $("#name").val();
+            item.description = $("#description").val();
+            item.category = $("#category").val();
+            item.price = $("#price").val();
+            item.stock = $("#stock").val();
+            item.image = filename;
+            item.date = date;
+			// ajax call
+            $.when($.ajax({
+                url: "http://localhost:3000/products/"+item.id, 
+                type: "PATCH",
+                contentType: "application/json",
+                data: JSON.stringify(item),
+            }))
+            .done(function() {
+                window.location.reload();
+                $("#spinner").addClass("hidden");
+            })
+            .fail(function(e) {
+                $("#spinner").addClass("hidden");
+                alert("failure to update changes");
+            })
+
+        } // end of Edit function
+        else{ 
+			// Create function
+            $.when($.ajax({
+                url: "http://localhost:3000/products/", 
+                type: "POST",
+                contentType: "application/json",
+                data: jsonStr,
+                dataType:"JSON",
+            }))
+            .done(function() {
+				//alert("Success");
+                window.location.reload();
+                $("#spinner").addClass("hidden");
+            })
+            .fail(function(e) {
+                $("#spinner").addClass("hidden");
+                alert("failure");
+            })
+
+        } // end of create
+    }
+    else // null data
+    {
+        alert("Fail to get data. Check Input!!");
+    }
 }
 
 //Assigned to Yan
