@@ -70,14 +70,33 @@ function createUpdateItem(){
 
 //Assigned to Yan
 //loadItem Function will load data to Form for update when edit button clicked 
-function loadItem(i){
-
+function loadItem(i){// i- index in items
+    item = items[i];
+    $("#name").val(item.name);
+	$("#category").val(item.category);
+    $("#price").val(item.price);
+    $("#stock").val(item.stock);
+    $("#description").val(item.description);
+    isEdit = true;
 }
 
 //Assigned to Yan
 //deleteItem Function will delete data 
-function deleteItem(){ // i is for get index
-
+function deleteItem(){
+	$("#spinner").removeClass("hidden");
+    // delete ajax call with item id 
+	$.when($.ajax({
+        url: "http://localhost:3000/products/"+item.id, 
+        type: "DELETE"
+    }))
+    .done(function() { //reload 
+        window.location.reload();
+        $("#spinner").addClass("hidden");
+    })
+    .fail(function(e) {
+        $("#spinner").addClass("hidden");
+        alert("failure to delete changes");
+    })
 }
 
 //Dialog Assigned to Minsu
