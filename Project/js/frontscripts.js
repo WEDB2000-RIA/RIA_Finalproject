@@ -27,10 +27,7 @@ $(function () {
 
 //Assigned to Paddy
 //loadProducts Function will load image and name of all products from Server 
-
-$(function () {
-    loadProducts(category);
-}function loadProducts(sortBy){
+function loadProducts(sortBy){
     $("#spinner").removeClass("hidden");
     $.ajax({
         type:"GET",
@@ -63,6 +60,32 @@ $(function () {
 
 //Assigned to Paddy
 //loadItem Function will load data when user pick the image on product
-function loadItem(i){
 
+function loadItem(i){
+	$("#selectedItem").html(""); //initialize
+	item = items[i];
+	//alert(item.name);
+	var selectedItem =	`<div class="row">` +
+							`<div class="col-lg-12">` +
+								`<h1 class="page-header">${item.name}</h1> +
+							`</div>` +
+						`<div class="row"> +
+							`<div class="col-md-8">` +
+								`<img class="img-responsive" src="./img/${item.image}">` +
+							`</div>` +
+                            `<div class="col-md-4">` +
+                            	`<h3>Description</h3>` +
+                            	`<p>${item.description}</p>` +
+                            	`<h3>Category</h3>`  +
+                            	`<p>${item.category}</p>` +
+                            	`<h3>Price</h3>` +
+                            	`<p>$ ${item.price}</p>` +
+                            	`<h3>Stock</h3>` +
+                            	`<p>${item.stock}</p>` +
+                            `</div>` +
+                        `</div>`;
+
+    $("#selectedItem").append(selectedItem);
 }
+
+// End of Paddy working
